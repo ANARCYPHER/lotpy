@@ -1,0 +1,63 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Open Lotteries{% endblock %}
+
+{% block content %}
+<div class="row">
+{% if lotteries %}
+    <div class="col-md-6">
+    <h1>
+        Open Lotteries
+    </h1>
+{% for lottery in lotteries %}
+        <h2>
+            {{ lottery.name }}
+            <a class="btn btn-primary btn-lg" href="{%url 'play_lottery' lottery.id %}" role="button">Play</a>
+        </h2>
+        <p>
+        {{ lottery.description }}
+        </p>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if player_tickets %}
+<div class="col-md-6">
+    <h1>
+        My Tickets
+    </h1>
+{% for ticket in player_tickets %}
+<div role="alert" {% if not ticket.lottery.winner_chosen %}class="alert alert-info"{% else %}{% if ticket.is_winner %}class="alert alert-success"{% endif %}{% endif %}>
+    <h2>
+        {{ ticket.lottery.name }}
+    </h2>
+    <p>
+    {{ ticket.lottery.description }}
+    </p>
+    {% if ticket.is_winner %}
+    <h2>
+        You WON!
+    </h2>
+    {% endif %}
+    <h3>
+        Your numbers: {{ ticket.ticket }}
+    </h3>
+    {% if ticket.lottery.winner_chosen %}
+    {% if not ticket.is_winner %}
+    <h3>
+        the winner numbers are: {{ ticket.lottery.winner_ticket }}. Better luck next time!
+    </h3>
+    {% endif %}
+    {% else %}
+    <h3>
+        Winner tickets will be chosen in {{ ticket.lottery.closing_datetime|timeuntil }}
+    </h3>
+    {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+</div>
+
+</div>
+
+{% endblock content %}
